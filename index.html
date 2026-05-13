@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FarmSmart – Seed Segregation & Agricultural Guide</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+<!-- ========== HEADER / NAV ========== -->
+<header id="mainHeader">
+  <div class="header-top">
+    <div class="live-bar">
+      <span><i class="fas fa-clock"></i> <span id="liveClock">--:--:--</span></span>
+      <span><i class="fas fa-calendar-alt"></i> <span id="liveDate">--</span></span>
+      <span class="live-dot"><i class="fas fa-circle"></i> LIVE MARKET</span>
+    </div>
+    <div class="lang-switcher">
+      <select id="langSelect" onchange="switchLang(this.value)">
+        <option value="en">🌐 English</option>
+        <option value="hi">हिंदी</option>
+        <option value="ta">தமிழ்</option>
+        <option value="te">తెలుగు</option>
+        <option value="kn">ಕನ್ನಡ</option>
+        <option value="mr">मराठी</option>
+      </select>
+    </div>
+  </div>
+  <nav class="navbar">
+    <div class="logo">
+      <span class="logo-leaf">🌿</span>
+      <span class="logo-text">Farm<strong>Smart</strong></span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#soilSection" data-key="nav_soil">Soil</a></li>
+      <li><a href="#cropSection" data-key="nav_crop">Crops</a></li>
+      <li><a href="#seedSection" data-key="nav_seeds">Seeds</a></li>
+      <li><a href="#weatherSection" data-key="nav_weather">Weather</a></li>
+      <li><a href="#agriculturalSection" data-key="nav_agricultural">Agricultural Feature</a></li>
+      <li><a href="#waterSection" data-key="nav_water">Water</a></li>
+      <li><a href="#marketSection" data-key="nav_market">Market</a></li>
+      <li><a href="#farmerSection" data-key="nav_farmer">Farmer</a></li>
+    </ul>
+    <button class="hamburger" onclick="toggleNav()"><i class="fas fa-bars"></i></button>
+  </nav>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-tag" data-key="hero_tag">Smart Agricultural Platform</p>
+    <h1 class="hero-title" data-key="hero_title">Green Fields,<br/>Bright Future</h1>
+    <p class="hero-sub" data-key="hero_sub">Identify the right seeds for your soil, track live prices, get weather updates and AI-powered farming guidance — all in one place.</p>
+    <div class="hero-btns">
+      <a href="#seedSection" class="btn-primary" data-key="hero_btn1">Segregate Seeds</a>
+      <a href="#marketSection" class="btn-outline" data-key="hero_btn2">Live Market Prices</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-card">
+      <span class="stat-num">150+</span>
+      <span class="stat-label" data-key="stat1">Crop Varieties</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">4</span>
+      <span class="stat-label" data-key="stat2">Soil Types</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num" id="livePrice">₹2140</span>
+      <span class="stat-label" data-key="stat3">Wheat/Qtl (Live)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ========== QUICK DASHBOARD ========== -->
+<section class="dashboard" id="dashboard">
+  <div class="container">
+    <div class="dash-grid">
+
+      <!-- Weather Widget -->
+      <div class="dash-card weather-dash" id="weatherSection">
+        <div class="dash-card-header">
+          <i class="fas fa-cloud-sun"></i>
+          <h3 data-key="weather_title">Live Weather</h3>
+          <span class="live-badge">LIVE</span>
+        </div>
+        <div class="weather-main">
+          <div class="weather-icon-big" id="weatherIcon">☀️</div>
+          <div class="weather-info">
+            <p class="temp-big" id="weatherTemp">32°C</p>
+            <p class="weather-desc" id="weatherDesc">Sunny & Clear</p>
+            <p class="weather-loc" id="weatherLoc"><i class="fas fa-map-marker-alt"></i> Fetching location...</p>
+          </div>
+        </div>
+        <div class="weather-details">
+          <div><i class="fas fa-tint"></i> <span id="wHumidity">68%</span><br/><small>Humidity</small></div>
+          <div><i class="fas fa-wind"></i> <span id="wWind">12 km/h</span><br/><small>Wind</small></div>
+          <div><i class="fas fa-eye"></i> <span id="wVis">10 km</span><br/><small>Visibility</small></div>
+          <div><i class="fas fa-thermometer-half"></i> <span id="wFeels">34°C</span><br/><small>Feels Like</small></div>
+        </div>
+        <div class="weather-forecast" id="weatherForecast"></div>
+        <p class="weather-advice" id="weatherAdvice"></p>
+      </div>
+
+      <!-- Live Market Prices -->
+      <div class="dash-card market-dash">
+        <div class="dash-card-header">
+          <i class="fas fa-chart-line"></i>
+          <h3 data-key="market_title">Live Market Prices</h3>
+          <span class="live-badge">LIVE</span>
+        </div>
+        <div class="market-ticker" id="marketTicker"></div>
+        <div class="market-table-wrap">
+          <table class="market-table" id="marketTable">
+            <thead>
+              <tr>
+                <th data-key="mt_crop">Crop</th>
+                <th data-key="mt_price">Price/Qtl</th>
+                <th data-key="mt_change">Change</th>
+                <th data-key="mt_msp">MSP</th>
+              </tr>
+            </thead>
+            <tbody id="marketBody"></tbody>
+          </table>
+        </div>
+        <p class="market-note" data-key="market_note">* Prices are indicative. Check local mandi for exact rates.</p>
+      </div>
+
+      <!-- Soil Quick Check -->
+      <div class="dash-card soil-dash">
+        <div class="dash-card-header">
+          <i class="fas fa-layer-group"></i>
+          <h3 data-key="soil_quick_title">Quick Soil Check</h3>
+        </div>
+        <p data-key="soil_quick_desc">Select your soil type to see best crops:</p>
+        <div class="soil-btn-group">
+          <button class="soil-btn" onclick="quickSoil('sandy')" data-key="soil_sandy">🏜️ Sandy</button>
+          <button class="soil-btn" onclick="quickSoil('clay')" data-key="soil_clay">🧱 Clay</button>
+          <button class="soil-btn" onclick="quickSoil('loamy')" data-key="soil_loamy">🌱 Loamy</button>
+          <button class="soil-btn" onclick="quickSoil('black')" data-key="soil_black">⚫ Black</button>
+        </div>
+        <div class="soil-result" id="soilQuickResult"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== SOIL SYSTEM SECTION ========== -->
+<section class="section" id="soilSection">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-key="soil_tag">SOIL SYSTEM</span>
+      <h2 data-key="soil_h2">Know Your Soil</h2>
+      <p data-key="soil_p">Understanding your soil type is the foundation of successful farming. Each soil has unique properties that support different crops.</p>
+    </div>
+    <div class="soil-grid">
+      <div class="soil-card sandy">
+        <div class="soil-icon">🏜️</div>
+        <h3 data-key="sandy_title">Sandy Soil</h3>
+        <div class="soil-props">
+          <span><i class="fas fa-tint-slash"></i> <span data-key="sandy_drain">Low Water Retention</span></span>
+          <span><i class="fas fa-fire"></i> <span data-key="sandy_heat">Warms Quickly</span></span>
+          <span><i class="fas fa-seedling"></i> <span data-key="sandy_ph">pH: 5.5–7.0</span></span>
+        </div>
+        <p data-key="sandy_desc">Light and well-draining. Good for root vegetables and drought-tolerant crops.</p>
+        <div class="soil-crops">
+          <strong data-key="best_crops">Best Crops:</strong>
+          <div class="crop-tags">
+            <span>Groundnut</span><span>Watermelon</span><span>Carrot</span><span>Radish</span><span>Millet</span>
+          </div>
+        </div>
+        <div class="soil-tips">
+          <strong data-key="tips">Tips:</strong>
+          <ul>
+            <li data-key="sandy_t1">Add organic compost to improve fertility</li>
+            <li data-key="sandy_t2">Frequent but light irrigation needed</li>
+            <li data-key="sandy_t3">Apply mulch to retain moisture</li>
+          </ul>
+        </div>
+      </div>
+      <div class="soil-card clay">
+        <div class="soil-icon">🧱</div>
+        <h3 data-key="clay_title">Clay Soil</h3>
+        <div class="soil-props">
+          <span><i class="fas fa-water"></i> <span data-key="clay_drain">High Water Retention</span></span>
+          <span><i class="fas fa-snowflake"></i> <span data-key="clay_cool">Slow to Warm</span></span>
+          <span><i class="fas fa-seedling"></i> <span data-key="clay_ph">pH: 6.0–7.5</span></span>
+        </div>
+        <p data-key="clay_desc">Heavy and nutrient-rich but can become waterlogged. Ideal for paddy.</p>
+        <div class="soil-crops">
+          <strong data-key="best_crops">Best Crops:</strong>
+          <div class="crop-tags">
+            <span>Rice</span><span>Wheat</span><span>Cotton</span><span>Sugarcane</span><span>Cabbage</span>
+          </div>
+        </div>
+        <div class="soil-tips">
+          <strong data-key="tips">Tips:</strong>
+          <ul>
+            <li data-key="clay_t1">Add sand/grit to improve drainage</li>
+            <li data-key="clay_t2">Avoid working when wet</li>
+            <li data-key="clay_t3">Deep ploughing helps aeration</li>
+          </ul>
+        </div>
+      </div>
+      <div class="soil-card loamy">
+        <div class="soil-icon">🌱</div>
+        <h3 data-key="loamy_title">Loamy Soil</h3>
+        <div class="soil-props">
+          <span><i class="fas fa-balance-scale"></i> <span data-key="loamy_drain">Balanced Drainage</span></span>
+          <span><i class="fas fa-star"></i> <span data-key="loamy_ideal">Ideal for Farming</span></span>
+          <span><i class="fas fa-seedling"></i> <span data-key="loamy_ph">pH: 6.0–7.0</span></span>
+        </div>
+        <p data-key="loamy_desc">Best all-purpose soil. Rich in nutrients with good texture for most crops.</p>
+        <div class="soil-crops">
+          <strong data-key="best_crops">Best Crops:</strong>
+          <div class="crop-tags">
+            <span>Wheat</span><span>Maize</span><span>Vegetables</span><span>Fruits</span><span>Pulses</span>
+          </div>
+        </div>
+        <div class="soil-tips">
+          <strong data-key="tips">Tips:</strong>
+          <ul>
+            <li data-key="loamy_t1">Maintain with regular compost</li>
+            <li data-key="loamy_t2">Ideal for crop rotation</li>
+            <li data-key="loamy_t3">Minimal soil amendments needed</li>
+          </ul>
+        </div>
+      </div>
+      <div class="soil-card black">
+        <div class="soil-icon">⚫</div>
+        <h3 data-key="black_title">Black Soil</h3>
+        <div class="soil-props">
+          <span><i class="fas fa-expand-arrows-alt"></i> <span data-key="black_drain">High Shrink-Swell</span></span>
+          <span><i class="fas fa-leaf"></i> <span data-key="black_rich">Mineral Rich</span></span>
+          <span><i class="fas fa-seedling"></i> <span data-key="black_ph">pH: 7.5–8.5</span></span>
+        </div>
+        <p data-key="black_desc">Also called regur soil. Excellent for cotton due to high moisture retention.</p>
+        <div class="soil-crops">
+          <strong data-key="best_crops">Best Crops:</strong>
+          <div class="crop-tags">
+            <span>Cotton</span><span>Soybean</span><span>Sunflower</span><span>Sorghum</span><span>Lentils</span>
+          </div>
+        </div>
+        <div class="soil-tips">
+          <strong data-key="tips">Tips:</strong>
+          <ul>
+            <li data-key="black_t1">Needs drainage channels</li>
+            <li data-key="black_t2">Cracks in summer – good for aeration</li>
+            <li data-key="black_t3">Low nitrogen – add urea</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Soil Testing -->
+    <div class="soil-test-card">
+      <h3><i class="fas fa-flask"></i> <span data-key="soil_test_h">Soil Testing Guide</span></h3>
+      <div class="soil-test-grid">
+        <div>
+          <h4 data-key="when_test">When to Test?</h4>
+          <ul>
+            <li data-key="st1">Before each crop season</li>
+            <li data-key="st2">After heavy rainfall or flood</li>
+            <li data-key="st3">Every 2-3 years minimum</li>
+          </ul>
+        </div>
+        <div>
+          <h4 data-key="what_check">What to Check?</h4>
+          <ul>
+            <li data-key="sc1">NPK (Nitrogen, Phosphorus, Potassium)</li>
+            <li data-key="sc2">pH level and Organic Carbon</li>
+            <li data-key="sc3">Secondary nutrients: Ca, Mg, S</li>
+          </ul>
+        </div>
+        <div>
+          <h4 data-key="how_test">How to Test?</h4>
+          <ul>
+            <li data-key="sh1">Visit nearest Soil Health Centre</li>
+            <li data-key="sh2">Use Soil Health Card (Gov. India)</li>
+            <li data-key="sh3">Private lab testing available</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEED SEGREGATION TOOL -->
+  <section class="seed-tool" id="seed-tool">
+    <div class="section-header">
+      <h2>🔬 Seed Segregation Tool</h2>
+      <p>Fill in your land details to get personalized crop recommendations</p>
+    </div>
+    <div class="tool-container">
+      <div class="tool-form">
+        <div class="form-group">
+          <label>Soil Type</label>
+          <select id="soilType">
+            <option value="">-- Select Soil Type --</option>
+            <option value="sandy">Sandy Soil</option>
+            <option value="clay">Clay Soil</option>
+            <option value="loamy">Loamy Soil</option>
+            <option value="black">Black Soil</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Rainfall Level</label>
+          <select id="rainfall">
+            <option value="">-- Select Rainfall --</option>
+            <option value="low">Low (< 400mm)</option>
+            <option value="moderate">Moderate (400–800mm)</option>
+            <option value="high">High (> 800mm)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Water Availability</label>
+          <select id="water">
+            <option value="">-- Select Water Source --</option>
+            <option value="rain">Rain-fed only</option>
+            <option value="irrigation">Irrigation available</option>
+            <option value="drip">Drip Irrigation</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Season</label>
+          <select id="season">
+            <option value="">-- Select Season --</option>
+            <option value="kharif">Kharif (June–Oct)</option>
+            <option value="rabi">Rabi (Nov–Apr)</option>
+            <option value="zaid">Zaid (Mar–Jun)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Land Area (in Acres)</label>
+          <input type="number" id="landArea" placeholder="e.g. 5" min="0.1" />
+        </div>
+        <button class="btn-primary full" onclick="analyzeSeed()">🌱 Analyze & Get Recommendations</button>
+      </div>
+
+      <div class="tool-result" id="toolResult">
+        <div class="result-placeholder">
+          <span>🌿</span>
+          <p>Your seed recommendations will appear here after analysis.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="section-header light">
+      <h2 class="man">Agricultural Features</h2>
+      <p>Everything you need to manage your farm smartly</p>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card" onclick="openModal('soil')">
+        <div class="feature-icon">🪨</div>
+        <h3>Soil System</h3>
+        <p>Understand soil types — sandy, clay, loamy, and black — and how fertility affects crop growth.</p>
+        <span class="feature-tag">Learn More →</span>
+      </div>
+
+      <div class="feature-card" onclick="openModal('crop')">
+        <div class="feature-icon">🌾</div>
+        <h3>Crop Production</h3>
+        <p>Guidance on growing rice, wheat, maize, and vegetables with quality seeds and proper care.</p>
+        <span class="feature-tag">Learn More →</span>
+      </div>
+
+      <div class="feature-card" onclick="openModal('weather')">
+        <div class="feature-icon">☁️</div>
+        <h3>Weather Conditions</h3>
+        <p>Rainfall, temperature, and climate information to plan your farming activities effectively.</p>
+        <span class="feature-tag">Learn More →</span>
+      </div>
+
+      <div class="feature-card" onclick="openModal('pest')">
+        <div class="feature-icon">🐛</div>
+        <h3>Pest & Disease</h3>
+        <p>Identify and control insects, worms, fungal diseases, and locusts affecting your crops.</p>
+        <span class="feature-tag">Learn More →</span>
+      </div>
+
+      <div class="feature-card" onclick="openModal('water')">
+        <div class="feature-icon">💧</div>
+        <h3>Water Scarcity</h3>
+        <p>Solutions for drought, groundwater shortages, and tips on drip irrigation to save water.</p>
+        <span class="feature-tag">Learn More →</span>
+      </div>
+
+      <div class="feature-card" onclick="openModal('market')">
+        <div class="feature-icon">📈</div>
+        <h3>Marketing Price</h3>
+        <p>Fair market price insights and tips to avoid middlemen and get better deals for your produce.</p>
+        <span class="feature-tag">Learn More →</span>
+      </div>
+
+      <div class="feature-card" onclick="openModal('selling')">
+        <div class="feature-icon">💰</div>
+        <h3>Selling Price</h3>
+        <p>Calculate production costs, selling prices, and strategies for direct selling to improve income.</p>
+        <span class="feature-tag">Learn More →</span>
+      </div>
+
+      <div class="feature-card" onclick="openModal('pesticide')">
+        <div class="feature-icon">🧪</div>
+        <h3>Pesticides & Medicine</h3>
+        <p>Proper use of pesticides and fertilizers to protect crops without damaging soil health.</p>
+        <span class="feature-tag">Learn More →</span>
+      </div>
+
+    </div>
+  </section>
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-content" id="modalContent"></div>
+    </div>
+  </div>
+
+<!-- ========== CROP PRODUCTION SECTION ========== -->
+<section class="section" id="cropSection">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-key="crop_tag">CROP PRODUCTION</span>
+      <h2 data-key="crop_h2">Crop Production Guide</h2>
+    </div>
+    <div class="crop-tabs">
+      <button class="tab-btn active" onclick="showCropTab('cereals', this)" data-key="tab_cereals">🌾 Cereals</button>
+      <button class="tab-btn" onclick="showCropTab('vegetables', this)" data-key="tab_veg">🥦 Vegetables</button>
+      <button class="tab-btn" onclick="showCropTab('fruits', this)" data-key="tab_fruits">🍋 Fruits</button>
+      <button class="tab-btn" onclick="showCropTab('pulses', this)" data-key="tab_pulses">🫘 Pulses</button>
+      <button class="tab-btn" onclick="showCropTab('oilseeds', this)" data-key="tab_oil">🌻 Oilseeds</button>
+    </div>
+    <div class="crop-content" id="cropContent"></div>
+  </div>
+</section>
+
+
+<!-- ========== WATER MANAGEMENT SECTION ========== -->
+<section class="section" id="waterSection">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-key="water_tag">WATER MANAGEMENT</span>
+      <h2 data-key="water_h2">Water Scarcity Solutions</h2>
+    </div>
+    <div class="water-grid">
+      <div class="water-card">
+        <div class="water-icon">💧</div>
+        <h3 data-key="drip_h">Drip Irrigation</h3>
+        <p data-key="drip_p">Delivers water directly to roots. Saves 30-50% water compared to flood irrigation.</p>
+        <div class="water-bar"><div class="water-fill" style="width:85%">85% Efficient</div></div>
+        <ul><li data-key="drip1">Ideal for vegetables, fruits, cotton</li><li data-key="drip2">Reduces weed growth</li><li data-key="drip3">Govt. subsidy available up to 90%</li></ul>
+      </div>
+      <div class="water-card">
+        <div class="water-icon">🌧️</div>
+        <h3 data-key="rain_h">Rainwater Harvesting</h3>
+        <p data-key="rain_p">Collect and store monsoon rainwater for dry season use.</p>
+        <div class="water-bar"><div class="water-fill" style="width:70%">70% Effective</div></div>
+        <ul><li data-key="rain1">Farm ponds – low cost solution</li><li data-key="rain2">Check dams for groundwater recharge</li><li data-key="rain3">Reduces dependency on borewells</li></ul>
+      </div>
+      <div class="water-card">
+        <div class="water-icon">🚿</div>
+        <h3 data-key="sprinkler_h">Sprinkler System</h3>
+        <p data-key="sprinkler_p">Mimics natural rainfall. Ideal for uneven terrain and dense crops.</p>
+        <div class="water-bar"><div class="water-fill" style="width:75%">75% Efficient</div></div>
+        <ul><li data-key="sp1">Good for wheat, groundnut, vegetables</li><li data-key="sp2">Can also apply fertilizers via water</li><li data-key="sp3">Reduces soil erosion</li></ul>
+      </div>
+      <div class="water-card">
+        <div class="water-icon">🌱</div>
+        <h3 data-key="mulch_h">Mulching</h3>
+        <p data-key="mulch_p">Cover soil with organic material to retain moisture and reduce evaporation.</p>
+        <div class="water-bar"><div class="water-fill" style="width:60%">60% Water Saved</div></div>
+        <ul><li data-key="m1">Use straw, dried leaves, plastic sheets</li><li data-key="m2">Reduces watering frequency</li><li data-key="m3">Controls weed growth too</li></ul>
+      </div>
+    </div>
+    <div class="water-calendar">
+      <h3 data-key="irrig_cal">Irrigation Calendar by Crop</h3>
+      <table class="irrig-table">
+        <thead><tr><th data-key="ic_crop">Crop</th><th data-key="ic_freq">Frequency</th><th data-key="ic_method">Method</th><th data-key="ic_stage">Critical Stage</th></tr></thead>
+        <tbody id="irrigTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MARKET SECTION ========== -->
+<section class="section alt-bg" id="marketSection">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-key="mkt_tag">MARKET PRICES</span>
+      <h2 data-key="mkt_h2">Live Market & Selling Prices</h2>
+      <p data-key="mkt_p">Track real-time commodity prices, MSP rates, and plan your selling strategy.</p>
+    </div>
+    <div class="market-full-grid">
+      <div class="mkt-left">
+        <div class="mkt-filter">
+          <input type="text" id="mktSearch" placeholder="Search crop..." oninput="filterMarket()" />
+          <select id="mktCategory" onchange="filterMarket()">
+            <option value="all">All Categories</option>
+            <option value="cereal">Cereals</option>
+            <option value="pulse">Pulses</option>
+            <option value="vegetable">Vegetables</option>
+            <option value="oilseed">Oilseeds</option>
+            <option value="spice">Spices</option>
+          </select>
+        </div>
+        <div class="big-market-table-wrap">
+          <table class="big-market-table">
+            <thead>
+              <tr>
+                <th data-key="bmt_crop">Crop</th>
+                <th data-key="bmt_min">Min Price</th>
+                <th data-key="bmt_max">Max Price</th>
+                <th data-key="bmt_modal">Modal Price</th>
+                <th data-key="bmt_msp">MSP</th>
+                <th data-key="bmt_trend">Trend</th>
+              </tr>
+            </thead>
+            <tbody id="bigMarketBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="mkt-right">
+        <div class="selling-tips-card">
+          <h3><i class="fas fa-lightbulb"></i> <span data-key="sell_tips_h">Smart Selling Tips</span></h3>
+          <div class="tip-item"><i class="fas fa-store"></i><div><strong data-key="tip1_h">Direct Marketing</strong><p data-key="tip1_p">Sell directly at mandis or to processors. Eliminates middlemen and increases profit by 15-30%.</p></div></div>
+          <div class="tip-item"><i class="fas fa-users"></i><div><strong data-key="tip2_h">Farmer Producer Org.</strong><p data-key="tip2_p">Join FPO groups to negotiate better prices through collective bargaining power.</p></div></div>
+          <div class="tip-item"><i class="fas fa-warehouse"></i><div><strong data-key="tip3_h">Warehouse Storage</strong><p data-key="tip3_p">Store crops and sell during off-season when prices are higher. Use Warehouse Receipt loans.</p></div></div>
+          <div class="tip-item"><i class="fas fa-mobile-alt"></i><div><strong data-key="tip4_h">e-NAM Platform</strong><p data-key="tip4_p">Use eNAM (National Agriculture Market) app to reach buyers across India online.</p></div></div>
+        </div>
+        <div class="cost-calc-card">
+          <h3><i class="fas fa-calculator"></i> <span data-key="calc_h">Profit Calculator</span></h3>
+          <div class="calc-form">
+            <label data-key="calc_crop">Crop Name</label>
+            <input type="text" id="calcCrop" placeholder="e.g. Wheat" />
+            <label data-key="calc_qty">Quantity (Qtl)</label>
+            <input type="number" id="calcQty" placeholder="e.g. 50" />
+            <label data-key="calc_cost">Production Cost (₹/Qtl)</label>
+            <input type="number" id="calcCost" placeholder="e.g. 1200" />
+            <label data-key="calc_sell">Selling Price (₹/Qtl)</label>
+            <input type="number" id="calcSell" placeholder="e.g. 2200" />
+            <button class="btn-primary" onclick="calcProfit()" data-key="calc_btn">Calculate Profit</button>
+          </div>
+          <div class="calc-result" id="calcResult"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FARMER PROFILE SECTION ========== -->
+<section class="section" id="farmerSection">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" data-key="farmer_tag">FARMER PROFILES</span>
+      <h2 data-key="farmer_h2">Farmer Details & Registration</h2>
+    </div>
+    <div class="farmer-layout">
+      <div class="farmer-form-card">
+        <h3><i class="fas fa-user-plus"></i> <span data-key="farmer_reg">Register Farmer</span></h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label data-key="f_name">Full Name</label>
+            <input type="text" id="fName" placeholder="Farmer's name" />
+          </div>
+          <div class="form-group">
+            <label data-key="f_village">Village / Taluk</label>
+            <input type="text" id="fVillage" placeholder="Village name" />
+          </div>
+          <div class="form-group">
+            <label data-key="f_district">District</label>
+            <input type="text" id="fDistrict" placeholder="District" />
+          </div>
+          <div class="form-group">
+            <label data-key="f_state">State</label>
+            <select id="fState">
+              <option>Karnataka</option><option>Tamil Nadu</option><option>Maharashtra</option>
+              <option>Punjab</option><option>Haryana</option><option>Uttar Pradesh</option>
+              <option>Andhra Pradesh</option><option>Telangana</option><option>Gujarat</option><option>Rajasthan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-key="f_land">Land Size (Acres)</label>
+            <input type="number" id="fLand" placeholder="e.g. 5" />
+          </div>
+          <div class="form-group">
+            <label data-key="f_soil">Soil Type</label>
+            <select id="fSoil">
+              <option>Sandy</option><option>Clay</option><option>Loamy</option><option>Black</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-key="f_phone">Phone Number</label>
+            <input type="tel" id="fPhone" placeholder="+91 xxxxx xxxxx" />
+          </div>
+          <div class="form-group">
+            <label data-key="f_crop">Main Crop</label>
+            <input type="text" id="fCrop" placeholder="e.g. Rice, Wheat" />
+          </div>
+        </div>
+        <button class="btn-primary" onclick="registerFarmer()" data-key="f_register">Register</button>
+      </div>
+
+      <div class="farmer-list-card">
+        <h3><i class="fas fa-users"></i> <span data-key="farmer_list">Registered Farmers</span></h3>
+        <input type="text" id="farmerSearch" placeholder="Search farmer..." oninput="searchFarmers()" style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:6px;margin-bottom:12px;" />
+        <div id="farmerList" class="farmer-list"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== AI CHATBOT ========== -->
+<section class="section alt-bg" id="chatbot">
+  <div class="section-header">
+    <h2>🤖 AI Farm Assistant</h2>
+    <p>Ask anything about farming, seeds, soil, pest control, and more</p>
+  </div>
+  <div class="chatbot-container">
+    <div class="chat-window" id="chatWindow">
+      <div class="chat-msg bot">
+        <div class="chat-avatar">🌾</div>
+        <div class="chat-bubble">Hello! I'm your AI Farm Assistant. Ask me about seeds, soil type, pest control, crop selection, weather tips, market prices, or any farming question! 🌱</div>
+      </div>
+    </div>
+    <div class="chat-suggestions">
+      <button onclick="askQuick('Which seeds grow best in clay soil?')">Clay soil seeds?</button>
+      <button onclick="askQuick('How to control stem borer?')">Stem borer control</button>
+      <button onclick="askQuick('Best crops for Kharif season')">Kharif crops</button>
+      <button onclick="askQuick('How to save water in farming?')">Water saving tips</button>
+      <button onclick="askQuick('What is MSP for wheat?')">Wheat MSP</button>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Ask about seeds, soil, pests, weather..." onkeydown="if(event.key==='Enter') sendChat()"/>
+      <button onclick="sendChat()" class="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
+    </div>
+    <div class="chat-google-link">
+      <a href="https://translate.google.com" target="_blank"><i class="fas fa-language"></i> Translate to your language (Google Translate)</a>
+      <a href="https://www.google.com/search?q=farming+tips" target="_blank"><i class="fab fa-google"></i> Search on Google</a>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="logo" style="margin-bottom:12px;"><span>🌿</span> <span class="logo-text">Farm<strong>Smart</strong></span></div>
+        <p data-key="footer_about">Empowering farmers with smart technology, data-driven insights, and AI assistance to grow better crops and earn fair prices.</p>
+      </div>
+      <div>
+        <h4 data-key="footer_quick">Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="#soilSection" data-key="nav_soil">Soil System</a></li>
+          <li><a href="#seedSection" data-key="nav_seeds">Seed Guide</a></li>
+          <li><a href="#marketSection" data-key="nav_market">Market Prices</a></li>
+          <li><a href="#farmerSection" data-key="nav_farmer">Farmer Registration</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 data-key="footer_govt">Govt. Schemes</h4>
+        <ul class="footer-links">
+          <li><a href="#">PM-KISAN</a></li>
+          <li><a href="#">Soil Health Card</a></li>
+          <li><a href="#">e-NAM Platform</a></li>
+          <li><a href="#">PMFBY Insurance</a></li>
+          <li><a href="#">Kisan Credit Card</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+      <h4>Resources</h4>
+      <a href="https://enam.gov.in" target="_blank">eNAM Market</a>
+      <a href="https://farmer.gov.in" target="_blank">Farmer.gov.in</a>
+      <a href="https://mkisan.gov.in" target="_blank">mKisan Portal</a>
+      <a href="https://www.agmarknet.gov.in" target="_blank">AgMarkNet</a>
+    </div>
+      <div>
+        <h4 data-key="footer_helpline">Helplines</h4>
+        <ul class="footer-links no-dot">
+          <li><i class="fas fa-phone"></i> Kisan Call Center: 1800-180-1551</li>
+          <li><i class="fas fa-phone"></i> AgriMarket: 1800-270-0224</li>
+          <li><i class="fas fa-phone"></i> Weather Helpline: 1551</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p data-key="footer_copy">© 2025 FarmSmart. Built for Indian Farmers. All Rights Reserved.</p>
+      <p data-key="footer_note">⚠️ Market prices are indicative. Always verify with local mandi before selling.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
